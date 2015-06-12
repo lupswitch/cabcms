@@ -1,0 +1,4 @@
+完成Restful库开发
+登录检查
+api版本依次递减判断的router处理
+bower、gulp等环境初始化
