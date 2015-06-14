@@ -6,4 +6,9 @@ class Home extends MY_Controller {
 	{
 		var_dump('index-v1');
 	}
+
+	public function ttt()
+	{
+		echo 'ttt-v1';
+	}
 }
