@@ -16,11 +16,10 @@ class MY_Controller extends CI_Controller {
 		$resource = $this->router->class;
 		$current_path = $resource . '/' . $method;
 
-		$this->config->load('hiddenpaths');
-		$paths = $this->config->item('hiddenpaths');
+		$paths = config_item('hiddenpaths');
 
 		if(!in_array($current_path, $paths) &&
-			('get' == $method || !in_array($resource . '/ppd', $path)))
+			('get' == $method || !in_array($resource . '/ppd', $paths)))
 		{
 			return true;
 		}
@@ -31,7 +30,6 @@ class MY_Controller extends CI_Controller {
 
 	protected function _response($cnt, $http_code = 200, $headers = array())
 	{
-		$this->load->library('Restful');
 		$this->restful->response($cnt, $headers, $http_code);
 	}
 }

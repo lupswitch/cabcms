@@ -21,6 +21,10 @@
 
 class Restful {
 
+	private $_key_expiration = 3600; // token过期时间
+
+	public function __construct(){}
+
 	public function response($cnt, $headers, $http_code)
 	{
 		if(is_array($cnt))
@@ -38,5 +42,111 @@ class Restful {
 		}
 
 		echo $cnt;
+	}
+
+	public function sign($value)
+	{
+		$sign = new Sign(config_item('encryption_key'));
+		return $sign->sign($value);
+	}
+
+	public function unsign($key)
+	{
+		$sign = new Sign(config_item('encryption_key'));
+		return $sign->unsign($key, $this->_key_expiration);
+	}
+}
+
+
+
+class Sign {
+
+	const EPOCH = 1430699400; // 北京时间 2015-01-01 00:00:00
+
+	private $_sep = '.';
+	private $_key = null;
+	private $_salt = '3osCk9dLPQvMFvEAdpwE';
+
+	public function __construct($key)
+	{
+		$this->_key = $key;
+	}
+
+	public function sign($value)
+	{
+		$t = $this->_get_timestamp();
+		$t = $this->_int_to_bytes($t);
+		$timestamp = $this->_base64_encode($t);
+
+		$value = strval($value) . $this->_sep . $timestamp;
+
+		return $value . $this->_sep . $this->_get_signature($value);
+	}
+
+	public function unsign($token, $max_age = 300)
+	{
+		$data = array_filter(explode($this->_sep, $token));
+		if(count($data) < 3) return false;
+
+		$sig = array_pop($data);
+		$sig_ts = array_pop($data);
+		$value = implode('.', $data);
+
+		$t = $this->_base64_decode($sig_ts);
+		$timestamp = $this->_bytes_to_int($t);
+
+		if(is_null($timestamp)) return false;
+
+		$age = $this->_get_timestamp() - $timestamp;
+		if($age > $max_age) return false;
+
+		if($sig === $this->_get_signature($value . $this->_sep . $sig_ts))
+			return $value;
+		else
+			return false;
+	}
+
+	private function _get_timestamp()
+	{
+		return time() - self::EPOCH;
+	}
+
+	private function _base64_encode($data)
+	{
+		return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+	}
+
+	public function _base64_decode($data)
+	{
+		return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
+	}
+
+	private function _int_to_bytes($num)
+	{
+		$output = "";
+		while($num > 0)
+		{
+			$output .= chr($num & 0xff);
+			$num >>= 8;
+		}
+		return strrev($output);
+	}
+
+	private function _bytes_to_int($bytes)
+	{
+		$output = 0;
+		foreach(str_split($bytes) as $byte)
+		{
+			if($output > 0)
+			$output <<= 8;
+			$output += ord($byte);
+		}
+		return $output;
+	}
+
+	private function _get_signature($value)
+	{
+		$value = $this->_salt . $value;
+		return hash_hmac('sha256', $value, $this->_key);
 	}
 }

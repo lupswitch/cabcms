@@ -60,7 +60,7 @@ $autoload['packages'] = array();
 |	$autoload['libraries'] = array('user_agent' => 'ua');
 */
 
-$autoload['libraries'] = array();
+$autoload['libraries'] = array('Restful');
 
 
 /*
@@ -104,7 +104,7 @@ $autoload['helper'] = array('common_helper');
 |
 */
 
-$autoload['config'] = array();
+$autoload['config'] = array('hiddenpaths');
 
 
 /*
