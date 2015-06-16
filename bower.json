@@ -1,0 +1,11 @@
+{
+	"name": "cabcms",
+	"version": "0.0.1",
+	"author": "nisnaker@gmail.com",
+	"license": "MIT",
+	"dependencies": {
+		"angular": "*",
+		"restangular": "*",
+		"bootstrap": "*"
+	}
+}

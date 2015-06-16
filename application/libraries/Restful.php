@@ -50,14 +50,16 @@ class Restful {
 		return $sign->sign($value);
 	}
 
-	public function unsign($key)
+	public function unsign($token)
 	{
 		$sign = new Sign(config_item('encryption_key'));
-		return $sign->unsign($key, $this->_key_expiration);
+		return $sign->unsign($token, $this->_key_expiration);
 	}
 }
 
 
+// 带过期功能的加密(sign)和解密(unsign)类
+// source: https://github.com/mattbasta/itsdangerous-php/blob/master/itsdangerous.php
 
 class Sign {
 

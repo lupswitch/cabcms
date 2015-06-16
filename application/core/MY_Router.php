@@ -12,7 +12,7 @@ class MY_Router extends CI_Router {
 			return parent::_validate_request($segments);
 
 		$dir = $segments[0];
-		$pattern = '/^v([0-9]*)$/';
+		$pattern = '/^v([0-9]+)$/';
 		$ret = preg_match($pattern, $dir, $m);
 		if(!$ret)
 			return parent::_validate_request($segments);
