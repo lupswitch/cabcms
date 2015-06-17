@@ -1,25 +1,34 @@
 module.exports = function(gulp, config, $){
 
-	gulp.task('css', function(){
-		var ret = gulp.src(config.sassfiles)
+	gulp.task('scss', function(){
+		return gulp.src(config.sassfiles)
 			.pipe($.sass())
 			.pipe($.autoprefixer('last 10 version'))
 			.pipe(gulp.dest(config.buildcssdir));
+	});
 
-		// $.del(['static/styles-*.css'], function(err){});
+	var css_tasks = [];
 
-		var ret;
-		for(css in config['csses'])
-		{
-			ret = gulp.src(config['csses'][css])
-				// .pipe($.concat( css + '.css'))
+	function make_task(bundle_name){
+		var task_name = 'css-' + bundle_name
+		css_tasks.push(task_name)
+
+		var fn = function(){
+			return gulp.src(config['csses'][bundle_name])
+				// .pipe($.concat( bundle_name + '.css'))
 				.pipe($.rev())
-			 	.pipe($.filename({ bundleName: css }))
-			 	.pipe($.minifycss())
-			 	.pipe(gulp.dest(config.staticdir + 'css/'));
+				.pipe($.filename({ bundleName: bundle_name, log:true }))
+				.pipe($.minifycss())
+				.pipe(gulp.dest(config.staticdir + 'css/'));
 		}
 
-		return ret;
-	});
+		gulp.task(task_name, ['scss'], fn);
+	}
+
+	for(bundle_name in config['csses']) {
+		make_task(bundle_name)
+	}
+
+	gulp.task('css', css_tasks);
 
 }

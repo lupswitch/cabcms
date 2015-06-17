@@ -21,8 +21,8 @@ tasks.forEach(function (file) {
 gulp.task('default', ['css', 'js', 'rep']);
 // gulp.task('default', ['rep']);
 
-gulp.task('watch', ['build'], function(){
-	gulp.watch('assets/sass/**/*.scss', ['css']);
-	gulp.watch('assets/css/**/*.css', ['css']);
-	gulp.watch('assets/js/**/*.js', ['js']);
-});
+// gulp.task('watch', ['build'], function(){
+// 	gulp.watch('assets/sass/**/*.scss', ['css']);
+// 	gulp.watch('assets/css/**/*.css', ['css']);
+// 	gulp.watch('assets/js/**/*.js', ['js']);
+// });

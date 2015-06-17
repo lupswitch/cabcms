@@ -6,6 +6,6 @@
 	"dependencies": {
 		"angular": "*",
 		"restangular": "*",
-		"bootstrap": "*"
+		"lumx": "*"
 	}
 }
